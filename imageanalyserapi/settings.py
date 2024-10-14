@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-a2lz^&x+xqr*jkc$pv-3ns%u@_c&dg+&p^aqx7$a4q)%-#$zk-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -61,6 +62,7 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -143,6 +145,12 @@ STATIC_URL = 'static/'
 # MEDIA_URL = '/media/'
 # MEDIA_ROOT = BASE_DIR / 'media'
 
+# CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',  # React development server
+    'https://a86e-2401-4900-1c85-d6ac-d0b7-49c-459e-f78b.ngrok-free.app',  # Production frontend URL
+]
 
 
 # Default primary key field type
@@ -152,16 +160,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-AWS_ACCESS_KEY_ID = ''
-AWS_SECRET_ACCESS_KEY = ''
-AWS_STORAGE_BUCKET_NAME = ''
-AWS_S3_REGION_NAME = ''
-AWS_S3_SIGNATURE_NAME = 's3v4'
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME')
+AWS_S3_SIGNATURE_NAME = config('AWS_S3_SIGNATURE_NAME')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 AWS_S3_VERITY = True
 AWS_LOCATION = 'media'
+
+OPENAI_API_KEY = config('OPENAI_API_KEY')
 
 # Use S3 for default file storage
 STORAGES = {"default": {"BACKEND": "storages.backends.s3boto3.S3Boto3Storage"},
